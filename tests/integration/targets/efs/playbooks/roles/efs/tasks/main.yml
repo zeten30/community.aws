@@ -173,6 +173,49 @@
           - efs_result is changed
 
     # ============================================================
+    - name: Add tags to EFS filesystem
+      efs_tag:
+        state: present
+        resource: "{{ created_efs.efs.file_system_id }}"
+        tags:
+          Name: MyTestEFS
+          Env: IntegrationTests
+      register: efs_tag_result
+
+    - assert:
+        that:
+          - efs_tag_result.tags.Name is defined
+          - efs_tag_result.tags.Env is defined
+          - efs_tag_result.tags.Name is search("MyTestEFS")
+          - efs_tag_result.tags.Env is search("IntegrationTests")
+
+    - name: Remove specific EFS filesystem tag
+      efs_tag:
+        state: absent
+        resource: "{{ created_efs.efs.file_system_id }}"
+        tags:
+          Name: MyTestEFS
+      register: efs_tag_result
+
+    - assert:
+        that:
+          - not efs_tag_result.tags.Name is defined
+          - efs_tag_result.tags.Env is defined
+          - efs_tag_result.tags.Env is search("IntegrationTests")
+
+    - name: Remove all tag on EFS filesystem
+      efs_tag:
+        state: absent
+        resource: "{{ created_efs.efs.file_system_id }}"
+        tags: {}
+        purge_tags: true
+      register: efs_tag_result
+
+    - assert:
+        that:
+          - efs_tag_result.tags == {}
+
+    # ============================================================
     - name: Efs same value for provisioned_throughput_in_mibps
       efs:
         state: present
