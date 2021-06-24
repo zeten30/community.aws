@@ -58,15 +58,6 @@ EXAMPLES = r'''
       Name: MyEFS
       Env: Production
 
-- name: Remove the Env tag
-  community.aws.efs_tag:
-    resource: fs-123456ab
-    state: present
-    tags:
-      Name: MyEFS
-      Env: Production
-    state: absent
-
 - name: Remove the Env tag if it's currently 'development'
   community.aws.efs_tag:
     resource: fsap-78945ff
