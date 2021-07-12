@@ -151,7 +151,7 @@ def main():
         result['removed_tags'] = remove_tags
         if not module.check_mode:
             try:
-                efs.untag_resource(ResourceId=resource, TagKeys=list(remove_tags.keys()))
+                efs.untag_resource(aws_retry=True, ResourceId=resource, TagKeys=list(remove_tags.keys()))
             except (BotoCoreError, ClientError) as remove_tag_error:
                 module.fail_json_aws(remove_tag_error, msg='Failed to remove tags {0} from resource {1}'.format(remove_tags, resource))
 
