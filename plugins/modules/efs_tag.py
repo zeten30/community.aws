@@ -20,7 +20,6 @@ description:
     - Resources are referenced by their ID (filesystem or filesystem access point).
 author:
   - Milan Zink (@zeten30)
-requirements: [ boto3, botocore ]
 options:
   resource:
     description:
