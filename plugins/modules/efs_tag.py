@@ -24,7 +24,7 @@ requirements: [ boto3, botocore ]
 options:
   resource:
     description:
-      - EFS Filesystem ID or EFS Filesystem Access Point ID
+      - EFS Filesystem ID or EFS Filesystem Access Point ID.
     type: str
   state:
     description:
