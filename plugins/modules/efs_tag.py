@@ -17,7 +17,7 @@ notes:
     - none
 description:
     - Creates and removes tags for Amazon EFS resources.
-    - Resources are referenced by their ID (filesystem or filesystem access point)
+    - Resources are referenced by their ID (filesystem or filesystem access point).
 author:
   - Milan Zink (@zeten30)
 requirements: [ boto3, botocore ]
