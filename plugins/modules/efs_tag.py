@@ -127,7 +127,7 @@ def main():
 
     result = {'changed': False}
 
-    efs = module.client('efs')
+    efs = module.client('efs', retry_decorator=AWSRetry.jittered_backoff())
 
     current_tags = get_tags(efs, module, resource)
 
