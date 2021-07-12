@@ -11,7 +11,7 @@ __metaclass__ = type
 DOCUMENTATION = r'''
 ---
 module: efs_tag
-version_added: 1.6.0
+version_added: 2.0.0
 short_description: create and remove tags on Amazon EFS resources
 notes:
     - none
