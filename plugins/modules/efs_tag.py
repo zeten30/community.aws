@@ -104,7 +104,7 @@ def get_tags(efs, module, resource):
     Get resource tags
     '''
     try:
-        return boto3_tag_list_to_ansible_dict(efs.list_tags_for_resource(ResourceId=resource)['Tags'])
+        return boto3_tag_list_to_ansible_dict(efs.list_tags_for_resource(aws_retry=True, ResourceId=resource)['Tags'])
     except (BotoCoreError, ClientError) as get_tags_error:
         module.fail_json_aws(get_tags_error, msg='Failed to fetch tags for resource {0}'.format(resource))
 
