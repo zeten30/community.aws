@@ -98,6 +98,7 @@ from ansible_collections.amazon.aws.plugins.module_utils.ec2 import boto3_tag_li
 MAX_AWS_RETRIES = 10  # How many retries to perform when an API call is failing
 WAIT_RETRY = 5  # how many seconds to wait between propagation status polls
 
+
 def get_tags(efs, module, resource):
     '''
     Get resource tags
