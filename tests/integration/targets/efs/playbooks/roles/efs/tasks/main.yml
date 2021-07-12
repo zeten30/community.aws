@@ -178,30 +178,46 @@
         state: present
         resource: "{{ created_efs.efs.file_system_id }}"
         tags:
-          Name: MyTestEFS
+          "Title Case": 'Hello Cruel World ❤️'
+          "lowercase spaced": 'hello cruel world ❤️'
+          CamelCase: 'SimpleCamelCase ❤️'
           Env: IntegrationTests
+          Name: MyTestEFS
+          snake_case: 'simple_snake_case ❤️'
       register: efs_tag_result
 
     - assert:
         that:
-          - efs_tag_result.tags.Name is defined
           - efs_tag_result.tags.Env is defined
-          - efs_tag_result.tags.Name is search("MyTestEFS")
           - efs_tag_result.tags.Env is search("IntegrationTests")
+          - efs_tag_result.tags.Name is defined
+          - efs_tag_result.tags.Name is search("MyTestEFS")
+          - efs_tag_result.tags["CamelCase"] == 'SimpleCamelCase ❤️'
+          - efs_tag_result.tags["Title Case"] == 'Hello Cruel World ❤️'
+          - efs_tag_result.tags["lowercase spaced"] == 'hello cruel world ❤️'
+          - efs_tag_result.tags["snake_case"] == 'simple_snake_case ❤️'
 
     - name: Remove specific EFS filesystem tag
       efs_tag:
         state: absent
         resource: "{{ created_efs.efs.file_system_id }}"
         tags:
+          "Title Case": 'Hello Cruel World ❤️'
+          "lowercase spaced": 'hello cruel world ❤️'
+          CamelCase: 'SimpleCamelCase ❤️'
           Name: MyTestEFS
+          snake_case: 'simple_snake_case ❤️'
       register: efs_tag_result
 
     - assert:
         that:
-          - not efs_tag_result.tags.Name is defined
           - efs_tag_result.tags.Env is defined
           - efs_tag_result.tags.Env is search("IntegrationTests")
+          - not efs_tag_result.tags.Name is defined
+          - not efs_tag_result.tags["CamelCase"] is defined
+          - not efs_tag_result.tags["Title Case"] is defined
+          - not efs_tag_result.tags["lowercase spaced"] is defined
+          - not efs_tag_result.tags["snake_case"] is defined
 
     - name: Remove all tag on EFS filesystem
       efs_tag:
