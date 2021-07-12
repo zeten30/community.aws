@@ -173,65 +173,6 @@
           - efs_result is changed
 
     # ============================================================
-    - name: Add tags to EFS filesystem
-      efs_tag:
-        state: present
-        resource: "{{ created_efs.efs.file_system_id }}"
-        tags:
-          "Title Case": 'Hello Cruel World ❤️'
-          "lowercase spaced": 'hello cruel world ❤️'
-          CamelCase: 'SimpleCamelCase ❤️'
-          Env: IntegrationTests
-          Name: MyTestEFS
-          snake_case: 'simple_snake_case ❤️'
-      register: efs_tag_result
-
-    - assert:
-        that:
-          - efs_tag_result.tags.Env is defined
-          - efs_tag_result.tags.Env is search("IntegrationTests")
-          - efs_tag_result.tags.Name is defined
-          - efs_tag_result.tags.Name is search("MyTestEFS")
-          - efs_tag_result.tags["CamelCase"] == 'SimpleCamelCase ❤️'
-          - efs_tag_result.tags["Title Case"] == 'Hello Cruel World ❤️'
-          - efs_tag_result.tags["lowercase spaced"] == 'hello cruel world ❤️'
-          - efs_tag_result.tags["snake_case"] == 'simple_snake_case ❤️'
-
-    - name: Remove specific EFS filesystem tag
-      efs_tag:
-        state: absent
-        resource: "{{ created_efs.efs.file_system_id }}"
-        tags:
-          "Title Case": 'Hello Cruel World ❤️'
-          "lowercase spaced": 'hello cruel world ❤️'
-          CamelCase: 'SimpleCamelCase ❤️'
-          Name: MyTestEFS
-          snake_case: 'simple_snake_case ❤️'
-      register: efs_tag_result
-
-    - assert:
-        that:
-          - efs_tag_result.tags.Env is defined
-          - efs_tag_result.tags.Env is search("IntegrationTests")
-          - not efs_tag_result.tags.Name is defined
-          - not efs_tag_result.tags["CamelCase"] is defined
-          - not efs_tag_result.tags["Title Case"] is defined
-          - not efs_tag_result.tags["lowercase spaced"] is defined
-          - not efs_tag_result.tags["snake_case"] is defined
-
-    - name: Remove all tag on EFS filesystem
-      efs_tag:
-        state: absent
-        resource: "{{ created_efs.efs.file_system_id }}"
-        tags: {}
-        purge_tags: true
-      register: efs_tag_result
-
-    - assert:
-        that:
-          - efs_tag_result.tags == {}
-
-    # ============================================================
     - name: Efs same value for provisioned_throughput_in_mibps
       efs:
         state: present
@@ -312,6 +253,76 @@
         that:
           - efs_result is not changed
           - (efs_result.efs | length) == 0
+
+    # ============================================================
+    - name: Add tags to EFS filesystem
+      efs_tag:
+        state: present
+        resource: "{{ created_efs.efs.file_system_id }}"
+        aws_access_key: '{{ aws_access_key }}'
+        aws_secret_key: '{{ aws_secret_key }}'
+        security_token: '{{ security_token | default(omit) }}'
+        region: "{{ aws_region }}"
+        tags:
+          "Title Case": 'Hello Cruel World'
+          "lowercase spaced": 'hello cruel world'
+          CamelCase: 'SimpleCamelCase'
+          Env: IntegrationTests
+          snake_case: 'simple_snake_case'
+      register: efs_tag_result
+
+    - assert:
+        that:
+          - efs_tag_result.tags.Env is defined
+          - efs_tag_result.tags.Env is search("IntegrationTests")
+          - efs_tag_result.tags.Name is defined
+          - efs_tag_result.tags.Name is search("{{ resource_prefix }}-test-tag")
+          - efs_tag_result.tags["CamelCase"] == 'SimpleCamelCase'
+          - efs_tag_result.tags["Title Case"] == 'Hello Cruel World'
+          - efs_tag_result.tags["lowercase spaced"] == 'hello cruel world'
+          - efs_tag_result.tags["snake_case"] == 'simple_snake_case'
+
+    - name: Remove specific EFS filesystem tag
+      efs_tag:
+        state: absent
+        resource: "{{ created_efs.efs.file_system_id }}"
+        aws_access_key: '{{ aws_access_key }}'
+        aws_secret_key: '{{ aws_secret_key }}'
+        security_token: '{{ security_token | default(omit) }}'
+        region: "{{ aws_region }}"
+        tags:
+          "Title Case": 'Hello Cruel World'
+          "lowercase spaced": 'hello cruel world'
+          CamelCase: 'SimpleCamelCase'
+          snake_case: 'simple_snake_case'
+      register: efs_tag_result
+
+    - assert:
+        that:
+          - efs_tag_result.tags.Env is defined
+          - efs_tag_result.tags.Env is search("IntegrationTests")
+          - efs_tag_result.tags.Name is defined
+          - efs_tag_result.tags.Name is search("{{ resource_prefix }}-test-tag")
+          - not efs_tag_result.tags["CamelCase"] is defined
+          - not efs_tag_result.tags["Title Case"] is defined
+          - not efs_tag_result.tags["lowercase spaced"] is defined
+          - not efs_tag_result.tags["snake_case"] is defined
+
+    - name: Remove all tag on EFS filesystem
+      efs_tag:
+        state: absent
+        resource: "{{ created_efs.efs.file_system_id }}"
+        region: "{{ aws_region }}"
+        aws_access_key: '{{ aws_access_key }}'
+        aws_secret_key: '{{ aws_secret_key }}'
+        security_token: '{{ security_token | default(omit) }}'
+        tags: {}
+        purge_tags: true
+      register: efs_tag_result
+
+    - assert:
+        that:
+          - efs_tag_result.tags == {}
 
   # ============================================================
   always:
